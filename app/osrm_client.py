@@ -7,13 +7,18 @@ try:
 except ImportError:
     from settings import OSRM_SERVER as OSRM_BASE_URL
 
-def haversine(lat1, lon1, lat2, lon2):
+def haversine_km(lat1, lon1, lat2, lon2):
+    """Distanza Haversine in chilometri."""
     R = 6371.0088
     phi1, phi2 = math.radians(lat1), math.radians(lat2)
     dphi = math.radians(lat2 - lat1)
     dlambda = math.radians(lon2 - lon1)
     a = math.sin(dphi/2.0)**2 + math.cos(phi1)*math.cos(phi2)*math.sin(dlambda/2.0)**2
     return 2*R*math.asin(math.sqrt(a))
+
+# ✅ alias per compatibilità col vecchio codice
+def haversine(lat1, lon1, lat2, lon2):
+    return haversine_km(lat1, lon1, lat2, lon2)
 
 def osrm_table(coords: List[Tuple[float,float]], annotations="duration"):
     coords_q = ";".join([f"{lon},{lat}" for lat,lon in coords])
