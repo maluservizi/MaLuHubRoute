@@ -1,0 +1,9 @@
+[server]
+headless = true
+port = 10000
+enableCORS = false
+mediaFileStorage = "filesystem"
+
+[theme]
+base = "light"
+primaryColor = "#ffcc00"
