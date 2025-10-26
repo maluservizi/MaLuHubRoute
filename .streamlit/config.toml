@@ -1,8 +1,11 @@
 [server]
 headless = true
 port = 10000
-enableCORS = false
-mediaFileStorage = "filesystem"
+# Se serve CORS libero, disattiva XSRF (Render non usa domini multipli, va bene così):
+enableXsrfProtection = false
+
+[browser]
+gatherUsageStats = false
 
 [theme]
 base = "light"
