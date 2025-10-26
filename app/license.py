@@ -37,9 +37,11 @@ ERROR_MESSAGES = {
     "limit": LICENSE_ERROR_LIMIT,
 }
 
+
 def get_license_error_message(error_type: str, lang: str = "it") -> str:
     """Return localized message for error_type: invalid | expired | limit."""
     return ERROR_MESSAGES.get(error_type, {}).get(lang, ERROR_MESSAGES["invalid"]["it"])
+
 
 # ===== Internal helpers =====
 def _headers():
@@ -48,6 +50,7 @@ def _headers():
         "Accept": "application/vnd.api+json",
         "Content-Type": "application/json",
     }
+
 
 def _infer_plan_from_product_id(product_id: Optional[int]) -> str:
     try:
@@ -62,21 +65,20 @@ def _infer_plan_from_product_id(product_id: Optional[int]) -> str:
         pass
     return "basic"
 
+
 # ===== Public API =====
 def validate_license(license_key: str) -> Tuple[bool, str, Optional[str]]:
     """
     Validate a Lemon Squeezy license key.
     Returns: (ok, plan, error_type)
       - ok: True if valid and usable
-      - plan: "basic" | "europe" (best-effort)
+      - plan: "basic" | "europe"
       - error_type: None if ok, otherwise "invalid" | "expired" | "limit"
 
     Behavior:
-      * If LS_API_KEY missing, uses a DEV fallback:
-         - keys ending with 'EUROPE' -> ('europe')
-         - else -> ('basic')
-      * If LS_API_KEY present but key starts with 'TEST' or ends with 'EUROPE',
-        also accept it as a mock license (for testing without Lemon).
+      * If LS_API_KEY missing → fallback dev mode.
+      * If LS_API_KEY present but the key starts with 'TEST' or ends with 'EUROPE',
+        accept it locally for testing (mock activation).
     """
     key = (license_key or "").strip()
     if not key:
@@ -89,7 +91,7 @@ def validate_license(license_key: str) -> Tuple[bool, str, Optional[str]]:
             return (True, "europe", None)
         return (True, "basic", None)
     else:
-        # --- Patch: accept TEST/EUROPE keys even if LS_API_KEY is set ---
+        # --- Patch: accetta chiavi di test anche se LS_API_KEY è impostata ---
         up = key.upper()
         if up.startswith("TEST") or up.endswith("EUROPE"):
             if up.endswith("EUROPE"):
@@ -99,6 +101,7 @@ def validate_license(license_key: str) -> Tuple[bool, str, Optional[str]]:
     try:
         payload = {"data": {"type": "license-validations", "attributes": {"license_key": key}}}
         r = requests.post(LS_VALIDATE_URL, json=payload, headers=_headers(), timeout=20)
+
         if r.status_code >= 400:
             try:
                 err = r.json()
@@ -130,7 +133,8 @@ def validate_license(license_key: str) -> Tuple[bool, str, Optional[str]]:
     except Exception:
         return (False, "basic", "invalid")
 
-# ===== Optional: Streamlit helpers (safe import) =====
+
+# ===== Optional: Streamlit helpers =====
 def streamlit_show_error(error_type: str, lang: str = "it"):
     """If Streamlit is installed, show a localized error banner."""
     try:
@@ -144,4 +148,3 @@ def streamlit_show_error(error_type: str, lang: str = "it"):
             st.error(msg)
     except Exception:
         pass
-
