@@ -27,3 +27,6 @@ OSRM_SERVER = os.getenv("OSRM_SERVER", "https://router.project-osrm.org")
 
 # === lingua di default dell’interfaccia ===
 DEFAULT_LANGUAGE = "it"
+
+# === compatibilità vecchia: OSRM_BASE_URL ===
+OSRM_BASE_URL = OSRM_SERVER
