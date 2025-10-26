@@ -23,10 +23,11 @@ except Exception:
     LS_PRODUCT_IDS = {"basic": 0, "europe": 0}
 
 # === OSRM service ===
+# URL del server OSRM; va bene quello pubblico per test
 OSRM_SERVER = os.getenv("OSRM_SERVER", "https://router.project-osrm.org")
+
+# 🔁 Compatibilità con il vecchio codice:
+OSRM_BASE_URL = os.getenv("OSRM_BASE_URL", OSRM_SERVER)
 
 # === lingua di default dell’interfaccia ===
 DEFAULT_LANGUAGE = "it"
-
-# === compatibilità vecchia: OSRM_BASE_URL ===
-OSRM_BASE_URL = OSRM_SERVER
